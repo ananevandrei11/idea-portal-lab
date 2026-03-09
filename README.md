@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Idea Portal Lab
+
+A learning project for PostgreSQL, Docker, and Next.js 15.
+
+## Prerequisites
+
+- [Docker](https://www.docker.com/) installed and running
+- Node.js 20+
 
 ## Getting Started
 
-First, run the development server:
+### 1. Copy environment variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` if you need to change credentials or port.
+
+### 2. Start the database
+
+```bash
+docker compose up -d
+```
+
+### 3. Verify the database is running
+
+```bash
+docker compose ps
+```
+
+The `STATUS` column should show `healthy` (may take 10–15 seconds on first run).
+
+### 4. Open pgAdmin (browser UI)
+
+Go to [http://localhost:5050](http://localhost:5050)
+
+Login with:
+- **Email:** `admin@local.dev`
+- **Password:** `admin`
+
+To connect to the database in pgAdmin:
+1. Right-click **Servers** → **Register** → **Server**
+2. **Name:** `idea-portal-local`
+3. **Connection tab:**
+   - Host: `db` (the Docker service name)
+   - Port: `5432`
+   - Maintenance database: `idea_portal_dev`
+   - Username: `idea_user`
+   - Password: `idea_secret`
+
+### 5. Start the Next.js app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Next.js Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server (with hot reload) |
+| `npm run build` | Build the app for production |
+| `npm run start` | Start production server (after build) |
+| `npm run lint` | Check code for errors with ESLint |
 
-## Learn More
+## Useful Docker Commands
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command | Description |
+|---|---|
+| `docker compose up -d` | Start containers in background |
+| `docker compose down` | Stop containers (data is preserved) |
+| `docker compose down -v` | Stop and delete all data (clean slate) |
+| `docker compose ps` | Check container status |
+| `docker compose logs db` | View database logs |
+| `docker compose exec db psql -U idea_user -d idea_portal_dev` | Open psql shell |
