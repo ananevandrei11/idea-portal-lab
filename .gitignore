@@ -44,9 +44,12 @@ docker-compose.override.yml
 *.tsbuildinfo
 next-env.d.ts
 
-
+.windsurf
+.playwright-mcp
+.agents
 .claude
 .qwen
 .gemini
+skills-lock.json
 CLAUDE.md
 /src/generated/prisma
