@@ -1,12 +1,19 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useTransition } from "react";
 import { deleteIdea } from "@/actions/ideas";
 import { cn } from "@/lib/cn";
 import styles from "./dialog.module.css";
 
 export function DeleteConfirmDialog({ id }: { id: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function handleDelete(formData: FormData) {
+    startTransition(async () => {
+      await deleteIdea(formData);
+    });
+  }
 
   return (
     <>
@@ -31,20 +38,24 @@ export function DeleteConfirmDialog({ id }: { id: string }) {
           </p>
 
           <div className="mt-6 flex gap-2 justify-end">
-            {/* form method="dialog" — native way to close the dialog without JS */}
             <form method="dialog">
-              <button type="submit" className={styles.btnSecondary}>
+              <button
+                type="submit"
+                disabled={isPending}
+                className={styles.btnSecondary}
+              >
                 Cancel
               </button>
             </form>
 
-            <form action={deleteIdea}>
+            <form action={handleDelete}>
               <input type="hidden" name="id" value={id} />
               <button
                 type="submit"
-                className="rounded-lg bg-red-600 text-white px-4 py-2 text-sm font-medium hover:bg-red-700 transition-colors"
+                disabled={isPending}
+                className="rounded-lg bg-red-600 text-white px-4 py-2 text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
               >
-                Delete
+                {isPending ? "Deleting..." : "Delete"}
               </button>
             </form>
           </div>

@@ -1,12 +1,20 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useTransition } from "react";
 import { createIdea } from "@/actions/ideas";
 import { cn } from "@/lib/cn";
 import styles from "./dialog.module.css";
 
 export function NewIdeaDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function handleAction(formData: FormData) {
+    startTransition(async () => {
+      await createIdea(formData);
+      dialogRef.current?.close();
+    });
+  }
 
   return (
     <>
@@ -27,7 +35,7 @@ export function NewIdeaDialog() {
             New Idea
           </h2>
 
-          <form action={createIdea} className="space-y-3">
+          <form action={handleAction} className="space-y-3">
             <input
               name="title"
               required
@@ -48,20 +56,20 @@ export function NewIdeaDialog() {
             />
 
             <div className="flex gap-2 justify-end pt-2">
-              {/* type="button" — does not submit the form, closes the dialog via JS */}
               <button
                 type="button"
                 onClick={() => dialogRef.current?.close()}
+                disabled={isPending}
                 className={styles.btnSecondary}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                onClick={() => dialogRef.current?.close()}
+                disabled={isPending}
                 className={styles.btnPrimary}
               >
-                Add Idea
+                {isPending ? "Saving..." : "Add Idea"}
               </button>
             </div>
           </form>
