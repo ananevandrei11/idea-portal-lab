@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { deleteIdea } from "@/app/actions";
 import { getIdea, getIdeas } from "@/lib/queries/ideas";
+import { DeleteConfirmDialog } from "@/components/DialogIdea/DeleteConfirmDialog";
+import { Tag } from "@/components/Tag/Tag";
 
 export const revalidate = 60;
 
@@ -36,11 +37,7 @@ export default async function IdeaPage({ params }: Props) {
 
           {idea.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
-              {idea.tags.map((tag) => (
-                <span key={tag} className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-600 dark:text-zinc-400">
-                  {tag}
-                </span>
-              ))}
+              {idea.tags.map((tag) => <Tag key={tag} label={tag} />)}
             </div>
           )}
 
@@ -51,15 +48,7 @@ export default async function IdeaPage({ params }: Props) {
           </p>
         </article>
 
-        <form action={deleteIdea}>
-          <input type="hidden" value={id} name="id" />
-          <button
-            type="submit"
-            className="rounded-lg border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 px-4 py-2 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
-          >
-            Delete idea
-          </button>
-        </form>
+        <DeleteConfirmDialog id={id} />
       </main>
     </div>
   );
