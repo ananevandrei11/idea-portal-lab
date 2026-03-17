@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { deleteIdea } from "@/app/actions";
-import { getIdea } from "@/lib/queries/ideas";
+import { getIdea, getIdeas } from "@/lib/queries/ideas";
+
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const ideas = await getIdeas();
+  return ideas.map((idea) => ({ id: idea.id }));
+}
 
 type Props = { params: Promise<{ id: string }> };
 

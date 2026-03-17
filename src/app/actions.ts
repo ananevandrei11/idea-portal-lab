@@ -14,11 +14,13 @@ export async function createIdea(formData: FormData) {
 
   await prisma.idea.create({ data: { title, content, tags } });
   revalidatePath("/");
+  revalidatePath("/ideas/[id]", "page");
 }
 
 export async function deleteIdea(formData: FormData) {
   const id = formData.get("id") as string;
   await prisma.idea.delete({ where: { id } });
   revalidatePath("/");
+  revalidatePath(`/ideas/${id}`);
   redirect("/");
 }
