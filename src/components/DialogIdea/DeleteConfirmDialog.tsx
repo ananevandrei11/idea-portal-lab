@@ -42,7 +42,7 @@ export function DeleteConfirmDialog({ id }: { id: string }) {
               <button
                 type="submit"
                 disabled={isPending}
-                className={styles.btnSecondary}
+                className="btn-secondary"
               >
                 Cancel
               </button>

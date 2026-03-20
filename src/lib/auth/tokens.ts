@@ -34,3 +34,16 @@ export const verifyAccessToken = async (token: string): Promise<{ userId: string
     return null;
   }
 }
+
+export const verifyRefreshToken = async (token: string): Promise<{ userId: string }
+  | null> => {
+  try {
+    const secret = new
+      TextEncoder().encode(process.env.JWT_REFRESH_SECRET)
+    const { payload } = await jwtVerify<{ userId: string }>(token, secret)
+    if (typeof payload.userId !== 'string') return null
+    return { userId: payload.userId }
+  } catch {
+    return null;
+  }
+}

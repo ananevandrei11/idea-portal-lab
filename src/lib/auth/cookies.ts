@@ -1,7 +1,5 @@
 import { cookies } from "next/headers";
-
-export const ACCESS_TOKEN_COOKIE = 'access_token';
-export const REFRESH_TOKEN_COOKIE = 'refresh_token';
+import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "../constants/cookies";
 
 export const setAuthCookies = async (accessToken: string, refreshToken: string) => {
   const cookieStore = await cookies();

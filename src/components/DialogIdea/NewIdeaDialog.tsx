@@ -20,7 +20,7 @@ export function NewIdeaDialog() {
     <>
       <button
         onClick={() => dialogRef.current?.showModal()}
-        className={styles.btnPrimary}
+        className="btn-primary"
       >
         + New Idea
       </button>
@@ -40,19 +40,19 @@ export function NewIdeaDialog() {
               name="title"
               required
               placeholder="Title"
-              className={styles.input}
+              className="form-input"
             />
             <textarea
               name="content"
               required
               rows={4}
               placeholder="What's the idea?"
-              className={styles.textarea}
+              className="form-input form-textarea"
             />
             <input
               name="tags"
               placeholder="Tags (comma-separated)"
-              className={styles.input}
+              className="form-input"
             />
 
             <div className="flex gap-2 justify-end pt-2">
@@ -60,14 +60,14 @@ export function NewIdeaDialog() {
                 type="button"
                 onClick={() => dialogRef.current?.close()}
                 disabled={isPending}
-                className={styles.btnSecondary}
+                className="btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isPending}
-                className={styles.btnPrimary}
+                className="btn-primary"
               >
                 {isPending ? "Saving..." : "Add Idea"}
               </button>
