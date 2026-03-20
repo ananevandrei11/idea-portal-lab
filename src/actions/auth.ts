@@ -1,11 +1,14 @@
 "use server";
 
-import { setAuthCookies } from "@/lib/auth/cookies";
+import { clearAuthCookies, setAuthCookies } from "@/lib/auth/cookies";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { signAccessToken, signRefreshToken } from "@/lib/auth/tokens";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import crypto from 'crypto';
+import { REFRESH_TOKEN_COOKIE } from "@/lib/constants/cookies";
+import { cookies } from "next/headers";
+import { getCurrentUser } from "@/lib/auth/session";
 
 export async function register(formData: FormData): Promise<{ error: string } | void> {
   const email = formData.get("email") as string | null;
@@ -94,4 +97,39 @@ export async function login(formData: FormData): Promise<{ error: string } | voi
     return { error: err };
   }
   redirect("/");
+}
+
+export async function logout(): Promise<void> {
+  try {
+    const cookieStore = await cookies()
+    const refreshToken =
+      cookieStore.get(REFRESH_TOKEN_COOKIE)?.value;
+    if (refreshToken) {
+      const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex')
+      await prisma.refreshToken.updateMany({
+        where: { tokenHash },
+        data: { revokedAt: new Date() }
+      })
+    }
+    await clearAuthCookies();
+  } catch {
+    // ignore
+  }
+  redirect("/login");
+}
+
+
+export async function deleteAccount(): Promise<{ error: string } | void> {
+
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+  const userId = user.id;
+
+  try {
+    await prisma.user.delete({ where: { id: userId } });
+    await clearAuthCookies();
+  } catch {
+    // ignore
+  }
+  redirect("/register");
 }

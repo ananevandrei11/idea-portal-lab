@@ -26,30 +26,28 @@ export default async function IdeaPage({ params }: Props) {
   if (!idea) notFound();
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 px-4 py-12">
-      <main className="max-w-2xl mx-auto space-y-8">
-        <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-          ← Back
-        </Link>
+    <div className="max-w-2xl mx-auto space-y-8">
+      <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+        ← Back
+      </Link>
 
-        <article className="bg-white dark:bg-zinc-900 rounded-xl p-8 shadow-sm border border-zinc-200 dark:border-zinc-800 space-y-4">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">{idea.title}</h1>
+      <article className="bg-white dark:bg-zinc-900 rounded-xl p-8 shadow-sm border border-zinc-200 dark:border-zinc-800 space-y-4">
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">{idea.title}</h1>
 
-          {idea.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {idea.tags.map((tag) => <Tag key={tag} label={tag} />)}
-            </div>
-          )}
+        {idea.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {idea.tags.map((tag) => <Tag key={tag} label={tag} />)}
+          </div>
+        )}
 
-          <p className="text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed">{idea.content}</p>
+        <p className="text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed">{idea.content}</p>
 
-          <p className="text-xs text-zinc-400">
-            Created {new Date(idea.createdAt).toLocaleDateString("en-US", { timeZone: "UTC", dateStyle: "long" })}
-          </p>
-        </article>
+        <p className="text-xs text-zinc-400">
+          Created {new Date(idea.createdAt).toLocaleDateString("en-US", { timeZone: "UTC", dateStyle: "long" })}
+        </p>
+      </article>
 
-        <DeleteConfirmDialog id={id} />
-      </main>
+      <DeleteConfirmDialog id={id} />
     </div>
   );
 }
