@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getIdea, getIdeas } from "@/lib/queries/ideas";
+import { getIdea } from "@/lib/queries/ideas";
 import { DeleteConfirmDialog } from "@/components/DialogIdea/DeleteConfirmDialog";
 import { Tag } from "@/components/Tag/Tag";
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const ideas = await getIdeas();
-  return ideas.map((idea) => ({ id: idea.id }));
-}
+export const dynamic = 'force-dynamic';
 
 type Props = { params: Promise<{ id: string }> };
 

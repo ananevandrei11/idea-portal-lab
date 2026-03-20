@@ -19,7 +19,7 @@ export function DeleteConfirmDialog({ id }: { id: string }) {
     <>
       <button
         onClick={() => dialogRef.current?.showModal()}
-        className="rounded-lg border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 px-4 py-2 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+        className="btn-danger-outline"
       >
         Delete idea
       </button>
@@ -53,7 +53,7 @@ export function DeleteConfirmDialog({ id }: { id: string }) {
               <button
                 type="submit"
                 disabled={isPending}
-                className="rounded-lg bg-red-600 text-white px-4 py-2 text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+                className="btn-danger"
               >
                 {isPending ? "Deleting..." : "Delete"}
               </button>
