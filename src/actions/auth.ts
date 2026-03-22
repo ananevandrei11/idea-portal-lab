@@ -133,3 +133,77 @@ export async function deleteAccount(): Promise<{ error: string } | void> {
   }
   redirect("/register");
 }
+
+export async function forgotPassword(
+  _prevState: { error?: string; success?: string } | null,
+  formData: FormData
+): Promise<{ error?: string; success?: string }> {
+  const email = formData.get("email") as string | null;
+
+  if (!email) {
+    return { error: "Email is required" };
+  }
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (user) {
+      const rawToken = crypto.randomBytes(32).toString('hex');
+      const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+      await prisma.passwordResetToken.create({
+        data: {
+          tokenHash,
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+          userId: user.id,
+        }
+      });
+      console.log('Reset link: ', "/reset-password?token=" + rawToken);
+    }
+  } catch {
+    return { error: "Something went wrong" };
+  }
+
+  return { success: "If this email exists, you will receive a reset link" };
+}
+
+export async function resetPassword(formData: FormData): Promise<{ error: string } | void> {
+  const token = formData.get("token") as string | null;
+  const password = formData.get("password") as string | null;
+
+  if (!token || !password) {
+    return {
+      error: "Token and password are required",
+    };
+  };
+
+  try {
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const resetToken = await prisma.passwordResetToken.findFirst({
+      where: { tokenHash }
+    })
+    if (!resetToken) {
+      return { error: "Token does not exists" };
+    };
+    if (resetToken.expiresAt < new Date()) {
+      return { error: "Token has expired" };
+    };
+    if (resetToken.usedAt !== null) {
+      return { error: "Token has already been used" };
+    }
+
+    const passwordHash = await hashPassword(password);
+    await prisma.user.update({
+      where: { id: resetToken.userId },
+      data: { passwordHash }
+    })
+    await prisma.passwordResetToken.update({
+      where: { id: resetToken.id },
+      data: { usedAt: new Date() }
+    })
+  } catch (error) {
+    const err = error instanceof Error ? error.message : "Something went wrong";
+    return { error: err };
+  }
+  redirect("/login");
+}
