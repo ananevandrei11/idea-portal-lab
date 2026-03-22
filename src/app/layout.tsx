@@ -28,10 +28,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <Header email={user?.email} />
-        <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 px-4 py-12 overflow-x-clip">
+        <main className="flex-1 bg-zinc-50 dark:bg-zinc-950 px-4 py-12 overflow-x-clip">
           {children}
         </main>
       </body>
