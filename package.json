@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.37.0",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.1",
     "next": "16.1.6",
