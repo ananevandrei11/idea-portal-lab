@@ -10,6 +10,17 @@ import { REFRESH_TOKEN_COOKIE } from "@/lib/constants/cookies";
 import { cookies } from "next/headers";
 import { getCurrentUser } from "@/lib/auth/session";
 
+async function storeRefreshToken(userId: string, refreshToken: string) {
+  const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
+  await prisma.refreshToken.create({
+    data: {
+      userId,
+      tokenHash,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    }
+  });
+}
+
 export async function register(formData: FormData): Promise<{ error: string } | void> {
   const email = formData.get("email") as string | null;
   const password = formData.get("password") as string | null;
@@ -26,25 +37,13 @@ export async function register(formData: FormData): Promise<{ error: string } | 
       return { error: "Email already exists" }
     };
 
-    const passwordHash = await hashPassword(password as string);
+    const passwordHash = await hashPassword(password);
     const user = await prisma.user.create({ data: { email, passwordHash } });
 
     const accessToken = await signAccessToken(user.id);
     const refreshToken = await signRefreshToken(user.id);
     await setAuthCookies(accessToken, refreshToken);
-
-    const refreshTokenHash = crypto
-      .createHash('sha256')
-      .update(refreshToken)
-      .digest('hex')
-
-    await prisma.refreshToken.create({
-      data: {
-        userId: user.id,
-        tokenHash: refreshTokenHash,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      }
-    })
+    await storeRefreshToken(user.id, refreshToken);
   } catch (error) {
     const err = error instanceof Error ? error.message : "Something went wrong";
     return { error: err };
@@ -79,19 +78,7 @@ export async function login(formData: FormData): Promise<{ error: string } | voi
     const accessToken = await signAccessToken(user.id);
     const refreshToken = await signRefreshToken(user.id);
     await setAuthCookies(accessToken, refreshToken);
-
-    const refreshTokenHash = crypto
-      .createHash('sha256')
-      .update(refreshToken)
-      .digest('hex')
-
-    await prisma.refreshToken.create({
-      data: {
-        userId: user.id,
-        tokenHash: refreshTokenHash,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      }
-    })
+    await storeRefreshToken(user.id, refreshToken);
   } catch (error) {
     const err = error instanceof Error ? error.message : "Something went wrong";
     return { error: err };
