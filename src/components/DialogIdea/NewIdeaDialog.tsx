@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { createIdea } from "@/actions/ideas";
 import { cn } from "@/lib/cn";
 import styles from "./dialog.module.css";
@@ -8,10 +8,21 @@ import styles from "./dialog.module.css";
 export function NewIdeaDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  function handleOpen() {
+    setError(null);
+    dialogRef.current?.showModal();
+  }
 
   function handleAction(formData: FormData) {
     startTransition(async () => {
-      await createIdea(formData);
+      const result = await createIdea(formData);
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
+      setError(null);
       dialogRef.current?.close();
     });
   }
@@ -19,7 +30,7 @@ export function NewIdeaDialog() {
   return (
     <>
       <button
-        onClick={() => dialogRef.current?.showModal()}
+        onClick={handleOpen}
         className="btn-primary whitespace-nowrap"
       >
         + New Idea
@@ -54,6 +65,10 @@ export function NewIdeaDialog() {
               placeholder="Tags (comma-separated)"
               className="form-input"
             />
+
+            {error && (
+              <p className="text-red-500 text-sm">{error}</p>
+            )}
 
             <div className="flex gap-2 justify-end pt-2">
               <button
