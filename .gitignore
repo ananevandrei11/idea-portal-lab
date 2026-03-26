@@ -45,6 +45,9 @@ docker-compose.override.yml
 *.tsbuildinfo
 next-env.d.ts
 
+# node compile cache
+/node-compile-cache
+
 .windsurf
 .playwright-mcp
 .agents
