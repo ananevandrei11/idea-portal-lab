@@ -28,6 +28,9 @@ export async function proxy(request: NextRequest) {
     if (!ratelimit) {
       return NextResponse.next();
     }
+    if (request.method !== 'POST') {
+      return NextResponse.next();
+    }
     const { success } = await ratelimit.limit(requestIP);
     if (!success) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
