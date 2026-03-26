@@ -20,7 +20,7 @@ export function NewIdeaDialog() {
     <>
       <button
         onClick={() => dialogRef.current?.showModal()}
-        className="btn-primary"
+        className="btn-primary whitespace-nowrap"
       >
         + New Idea
       </button>
