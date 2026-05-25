@@ -9,6 +9,7 @@ import crypto from 'crypto';
 import { REFRESH_TOKEN_COOKIE } from "@/lib/constants/cookies";
 import { cookies } from "next/headers";
 import { getCurrentUser } from "@/lib/auth/session";
+import { Prisma } from "@/generated/prisma/client";
 
 async function storeRefreshToken(userId: string, refreshToken: string) {
   const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
@@ -45,8 +46,10 @@ export async function register(formData: FormData): Promise<{ error: string } | 
     await setAuthCookies(accessToken, refreshToken);
     await storeRefreshToken(user.id, refreshToken);
   } catch (error) {
-    const err = error instanceof Error ? error.message : "Something went wrong";
-    return { error: err };
+    if (error instanceof Prisma.PrismaClientKnownRequestError || error instanceof Prisma.PrismaClientInitializationError || error instanceof Prisma.PrismaClientUnknownRequestError) {
+      return { error: "Something went wrong. Please try again later." };
+    }
+    return { error: "Something went wrong" };
   }
   redirect("/");
 }
@@ -80,8 +83,10 @@ export async function login(formData: FormData): Promise<{ error: string } | voi
     await setAuthCookies(accessToken, refreshToken);
     await storeRefreshToken(user.id, refreshToken);
   } catch (error) {
-    const err = error instanceof Error ? error.message : "Something went wrong";
-    return { error: err };
+    if (error instanceof Prisma.PrismaClientKnownRequestError || error instanceof Prisma.PrismaClientInitializationError || error instanceof Prisma.PrismaClientUnknownRequestError) {
+      return { error: "Something went wrong. Please try again later." };
+    }
+    return { error: "Something went wrong" };
   }
   redirect("/");
 }
@@ -189,8 +194,10 @@ export async function resetPassword(formData: FormData): Promise<{ error: string
       data: { usedAt: new Date() }
     })
   } catch (error) {
-    const err = error instanceof Error ? error.message : "Something went wrong";
-    return { error: err };
+    if (error instanceof Prisma.PrismaClientKnownRequestError || error instanceof Prisma.PrismaClientInitializationError || error instanceof Prisma.PrismaClientUnknownRequestError) {
+      return { error: "Something went wrong. Please try again later." };
+    }
+    return { error: "Something went wrong" };
   }
   redirect("/login");
 }
