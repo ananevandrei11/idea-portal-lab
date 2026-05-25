@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { Header } from "@/widgets/Header/Header";
 import { getCurrentUser } from "@/lib/auth/session";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Idea Portal",
+  title: "Idea Portal Lab",
   description: "Capture and manage your ideas",
 };
 
