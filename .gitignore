@@ -57,3 +57,6 @@ next-env.d.ts
 skills-lock.json
 CLAUDE.md
 /src/generated/prisma
+dep-graph.json
+dep-graph.mmd
+dep-graph.svg
