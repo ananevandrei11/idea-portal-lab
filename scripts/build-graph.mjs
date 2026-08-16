@@ -1,8 +1,9 @@
 import { Project } from "ts-morph";
-import { writeFileSync } from "fs";
+import { mkdirSync, writeFileSync } from "fs";
 import { relative } from "path";
 
 const ROOT = process.cwd();
+const OUT_DIR = `${ROOT}/graph`;
 
 const project = new Project({
   tsConfigFilePath: `${ROOT}/tsconfig.json`,
@@ -86,10 +87,11 @@ function buildMermaid(files) {
   return lines.join("\n");
 }
 
-writeFileSync(`${ROOT}/dep-graph.json`, JSON.stringify({ files, symbols }, null, 2));
-writeFileSync(`${ROOT}/dep-graph.mmd`, buildMermaid(files));
+mkdirSync(OUT_DIR, { recursive: true });
+writeFileSync(`${OUT_DIR}/dep-graph.json`, JSON.stringify({ files, symbols }, null, 2));
+writeFileSync(`${OUT_DIR}/dep-graph.mmd`, buildMermaid(files));
 
 console.log(`files:   ${Object.keys(files).length}`);
 console.log(`symbols: ${Object.keys(symbols).length}`);
-console.log(`→ dep-graph.json`);
-console.log(`→ dep-graph.mmd`);
+console.log(`→ graph/dep-graph.json`);
+console.log(`→ graph/dep-graph.mmd`);

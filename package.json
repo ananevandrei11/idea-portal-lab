@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "graph": "node scripts/build-graph.mjs",
-    "graph:viz": "node scripts/build-graph.mjs && npx @mermaid-js/mermaid-cli -i dep-graph.mmd -o dep-graph.svg",
+    "graph:viz": "node scripts/build-graph.mjs && npx @mermaid-js/mermaid-cli -i graph/dep-graph.mmd -o graph/dep-graph.svg",
     "graph:query": "node scripts/agent-tools.mjs"
   },
   "dependencies": {

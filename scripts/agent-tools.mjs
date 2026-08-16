@@ -9,7 +9,7 @@
 
 import { readFileSync } from "fs";
 
-const { files, symbols } = JSON.parse(readFileSync("./dep-graph.json", "utf-8"));
+const { files, symbols } = JSON.parse(readFileSync("./graph/dep-graph.json", "utf-8"));
 
 function lookupSymbol(name) {
   const sym = symbols[name];
