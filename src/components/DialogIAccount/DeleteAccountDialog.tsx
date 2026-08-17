@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { cn } from "@/lib/cn";
 import styles from "./dialog.module.css";
 import { deleteAccount } from "@/actions/auth";
@@ -8,10 +8,14 @@ import { deleteAccount } from "@/actions/auth";
 export function DeleteAccountDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   function handleDelete() {
     startTransition(async () => {
-      await deleteAccount();
+      setError(null);
+      // A successful delete redirects, so anything returned here is a failure.
+      const result = await deleteAccount();
+      if (result?.error) setError(result.error);
     });
   }
 
@@ -36,6 +40,12 @@ export function DeleteAccountDialog() {
           <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
             This action cannot be undone.
           </p>
+
+          {error ? (
+            <p role="alert" className="mt-4 text-sm text-red-600 dark:text-red-400">
+              {error}
+            </p>
+          ) : null}
 
           <div className="mt-6 flex gap-2 justify-end">
             <form method="dialog">
