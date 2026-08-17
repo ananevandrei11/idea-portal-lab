@@ -30,11 +30,21 @@ model User {
 
 model RefreshToken {
   id        String    @id @default(cuid())
-  tokenHash String
+  tokenHash String    @unique
   userId    String
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  // Set when this token is rotated out, pointing at its replacement. A token
+  // that is presented again after being replaced means the cookie leaked, so
+  // the whole family is revoked (OAuth 2.0 BCP refresh token reuse detection).
+  replacedById String?      @unique
+  replacedBy   RefreshToken? @relation("TokenRotation", fields: [replacedById], references: [id], onDelete: SetNull)
+  replaces     RefreshToken? @relation("TokenRotation")
+
+  @@index([userId])
 }
 
 model PasswordResetToken {

@@ -49,6 +49,8 @@ To connect to the database in pgAdmin:
    - Username: `idea_user`
    - Password: `idea_secret`
 
+4. `npx prisma db push`
+
 ### 5. Start the Next.js app
 
 ```bash
